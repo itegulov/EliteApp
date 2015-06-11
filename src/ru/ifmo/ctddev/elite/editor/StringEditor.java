@@ -5,6 +5,8 @@ import ru.ifmo.ctddev.elite.core.StringCursor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +15,14 @@ import java.util.concurrent.Executors;
 
 public class StringEditor {
     public static final int MAX_THREADS = 10;
-    JFrame frame;
-    JList jList;
-    JButton addButton, removeButton, refreshButton;
-    JPanel mainPanel, buttonPanel;
-    DefaultListModel<String> listModel;
-    StringCore stringCore;
-    ExecutorService executorService;
-    StringCursor first;
+    private final JFrame frame;
+    private final JList<String> jList;
+    private final JButton addButton, removeButton, refreshButton;
+    private final JPanel mainPanel, buttonPanel;
+    private final DefaultListModel<String> listModel;
+    private StringCore stringCore;
+    private final ExecutorService executorService;
+    private StringCursor first;
 
     StringEditor() throws RemoteException{
         executorService = Executors.newFixedThreadPool(MAX_THREADS);
@@ -33,7 +35,7 @@ public class StringEditor {
         mainPanel = new JPanel();
         buttonPanel = new JPanel();
         listModel = new DefaultListModel<>();
-        jList = new JList(listModel);
+        jList = new JList<>(listModel);
 
         jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -54,8 +56,16 @@ public class StringEditor {
 
         buttonPanel.add(addButton);
         buttonPanel.add(removeButton);
+        buttonPanel.add(refreshButton);
         frame.getContentPane().add(mainPanel);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                executorService.shutdownNow();
+            }
+        });
         frame.pack();
         frame.setVisible(true);
     }
@@ -72,7 +82,6 @@ public class StringEditor {
                 SwingUtilities.invokeLater(() -> refreshUI(list));
             } catch (RemoteException e) {
                 e.printStackTrace();
-                return;
             }
         });
     }
@@ -83,20 +92,21 @@ public class StringEditor {
     }
 
     private void removeElements() {
-        int index = jList.getSelectedIndex();
+        final int index = jList.getSelectedIndex();
         executorService.submit(() -> {
             try {
                 for (int i = 0; i < index; i++) {
                     first.next();
                 }
-
+                stringCore.removeString(first);
+                for (int i = 0; i < index; i++) {
+                    first.previous();
+                }
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         });
-
-
-
+        refresh();
     }
 
     public void addElement() {
