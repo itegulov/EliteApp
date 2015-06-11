@@ -38,7 +38,7 @@ public class QueryUI extends JFrame {
     }
 
     private void initializeUI() {
-        queryButton.addActionListener(actionEvent -> querySubmitter.submit(queryBuilder.create()));
+        queryButton.addActionListener(actionEvent -> querySubmitter.submit(this, queryBuilder.create()));
         clearButton.addActionListener(actionEvent -> {
             queryBuilder.clear();
             rowsModel.clear();
