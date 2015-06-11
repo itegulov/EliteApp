@@ -45,9 +45,9 @@ public interface StringCore extends Remote {
     List<Boolean> isAllExists(Collection<String> collection) throws RemoteException;
 
     /**
-     * Gets all queries, made to this database.
-     * @return list of queries for this database
+     * Gets all requests, made to this database.
+     * @return list of requests for this database
      * @throws RemoteException if some remote error has occurred
      */
-    List<Query> getQueries() throws RemoteException;
+    List<RequestHistory> getQueries() throws RemoteException;
 }

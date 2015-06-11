@@ -1,7 +1,9 @@
 package ru.ifmo.ctddev.elite.core;
 
 import java.rmi.RemoteException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -10,42 +12,24 @@ import java.util.NoSuchElementException;
  * @author Daniyar Itegulov
  */
 final class StringCursorImpl implements StringCursor {
-    private List<String> database;
-    private int index;
+    private ListIterator<String> iterator;
 
-    public StringCursorImpl(List<String> database) {
-        this.database = database;
-        index = 0;
+    public StringCursorImpl(ListIterator<String> iterator) {
+        this.iterator = iterator;
     }
 
     @Override
-    public void next() throws RemoteException {
-        if (index >= database.size() - 1) {
-            throw new NoSuchElementException();
-        }
-        index++;
+    public String next() throws RemoteException {
+        return iterator.next();
     }
 
     @Override
     public boolean hasNext() throws RemoteException {
-        return index <= database.size() - 1;
-    }
-
-    @Override
-    public String get() throws RemoteException {
-        try {
-            return database.get(index);
-        } catch (IndexOutOfBoundsException e) {
-            throw new NoSuchElementException();
-        }
+        return iterator.hasNext();
     }
 
     @Override
     public void remove() throws RemoteException {
-        try {
-            database.remove(index);
-        } catch (IndexOutOfBoundsException e) {
-            throw new NoSuchElementException();
-        }
+        iterator.remove();
     }
 }
