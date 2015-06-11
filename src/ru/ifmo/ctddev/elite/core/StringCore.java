@@ -2,6 +2,7 @@ package ru.ifmo.ctddev.elite.core;
 
 import ru.ifmo.ctddev.elite.query.Query;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * @author Daniyar Itegulov
  */
-public interface StringCore {
+public interface StringCore extends Remote {
     /**
      * Simply adds provided string to database.
      *

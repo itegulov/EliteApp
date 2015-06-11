@@ -1,12 +1,13 @@
 package ru.ifmo.ctddev.elite.core;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.NoSuchElementException;
 
 /**
  * @author Daniyar Itegulov
  */
-public interface StringCursor {
+public interface StringCursor extends Remote {
     /**
      * Moves cursor on next element.
      *
