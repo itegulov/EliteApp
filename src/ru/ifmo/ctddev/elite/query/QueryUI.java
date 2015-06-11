@@ -32,11 +32,12 @@ public class QueryUI extends JFrame {
         this.rowsModel = new DefaultListModel<>();
 
         initializeUI();
+        setContentPane(rootPanel);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        pack();
     }
 
     private void initializeUI() {
-        setContentPane(rootPanel);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         queryButton.addActionListener(actionEvent -> querySubmitter.submit(queryBuilder.create()));
         clearButton.addActionListener(actionEvent -> {
             queryBuilder.clear();
