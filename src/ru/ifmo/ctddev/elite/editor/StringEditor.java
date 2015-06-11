@@ -68,6 +68,7 @@ public class StringEditor {
         });
         frame.pack();
         frame.setVisible(true);
+        refresh();
     }
 
     private void refresh() {
