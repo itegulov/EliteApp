@@ -19,8 +19,7 @@ public class StringEditor {
     public static final int MAX_THREADS = 10;
     private final JFrame frame;
     private final JList<String> jList;
-    private final JButton addButton, removeButton, refreshButton;
-    private final JPanel mainPanel, buttonPanel;
+    private final JPanel buttonPanel;
     private final DefaultListModel<String> listModel;
     private StringCore stringCore;
     private final ExecutorService executorService;
@@ -34,7 +33,7 @@ public class StringEditor {
             connectingError();
         }
         frame = new JFrame(StringEditor.class.getSimpleName());
-        mainPanel = new JPanel();
+        JPanel mainPanel = new JPanel();
         buttonPanel = new JPanel();
         listModel = new DefaultListModel<>();
         jList = new JList<>(listModel);
@@ -50,9 +49,9 @@ public class StringEditor {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         mainPanel.add(jList, BorderLayout.CENTER);
 
-        addButton = createButton("Add", this::addElement, 'a');
-        removeButton = createButton("Remove", this::removeElement, 'm');
-        refreshButton = createButton("Refresh", this::refresh, 'f');
+        createButton("Add", this::addElement, 'a');
+        createButton("Remove", this::removeElement, 'm');
+        createButton("Refresh", this::refresh, 'f');
 
         frame.getContentPane().add(mainPanel);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -68,12 +67,11 @@ public class StringEditor {
         refresh();
     }
 
-    private JButton createButton(String name, Runnable action, char mnemonic) {
+    private void createButton(String name, Runnable action, char mnemonic) {
         JButton ans = new JButton(name);
         ans.addActionListener(e -> action.run());
         ans.setMnemonic(mnemonic);
         buttonPanel.add(ans);
-        return ans;
     }
 
     private void refresh() {
