@@ -43,7 +43,7 @@ public interface StringCore extends Remote {
      * @return list of results for strings in collection
      * @throws RemoteException if some remote error has occurred
      */
-    List<Boolean> isAllExists(Collection<String> collection) throws RemoteException;
+    List<Integer> countStrings(Collection<String> collection) throws RemoteException;
 
     /**
      * Gets all requests, made to this database.

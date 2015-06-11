@@ -45,18 +45,17 @@ final class StringCoreImpl implements StringCore {
     }
 
     @Override
-    public List<Boolean> isAllExists(Collection<String> collection) throws RemoteException {
-        List<Boolean> list = new ArrayList<>();
+    public List<Integer> countStrings(Collection<String> collection) throws RemoteException {
+        List<Integer> list = new ArrayList<>();
         for (String string: collection) {
-            boolean found = false;
+            int count = 0;
             queryEngine.addQuery(string);
             for (String data: database) {
                 if (string.equals(data)) {
-                    found = true;
-                    break;
+                    count++;
                 }
             }
-            list.add(found);
+            list.add(count);
         }
         return list;
     }

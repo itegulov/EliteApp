@@ -15,10 +15,11 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class CoreStarter {
     private final static int PORT = 8841;
-    private static final Registry registry;
+    private final static int RMI_DEFAULT_PORT = 1099;
+    private static final Registry registry; //Save it in static field, so it won't be garbage-collected
     static {
         try {
-            registry = LocateRegistry.createRegistry(1099);
+            registry = LocateRegistry.createRegistry(RMI_DEFAULT_PORT);
         } catch (RemoteException e) {
             System.err.println("Couldn't create regitstry");
             e.printStackTrace();
