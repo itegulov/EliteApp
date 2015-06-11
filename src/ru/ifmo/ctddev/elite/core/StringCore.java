@@ -1,5 +1,8 @@
 package ru.ifmo.ctddev.elite.core;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
@@ -48,4 +51,8 @@ public interface StringCore extends Remote {
      * @throws RemoteException if some remote error has occurred
      */
     List<RequestHistory> getQueries() throws RemoteException;
+
+    static StringCore getInstance() throws RemoteException, NotBoundException, MalformedURLException {
+        return (StringCore) Naming.lookup("rmi://localhost/core");
+    }
 }

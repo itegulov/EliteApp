@@ -7,6 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +29,11 @@ public class StringEditor {
 
     StringEditor() throws RemoteException{
         executorService = Executors.newFixedThreadPool(MAX_THREADS);
-        /*try {
-            stringCore = (StringCore) Naming.lookup("rmi://localhost/core");
+        try {
+            stringCore = StringCore.getInstance();
         } catch (NotBoundException | MalformedURLException e) {
             e.printStackTrace();
-        }*/
+        }
         frame = new JFrame(StringEditor.class.getSimpleName());
         mainPanel = new JPanel();
         buttonPanel = new JPanel();

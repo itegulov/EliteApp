@@ -11,7 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
  * @author Daniyar Itegulov
  */
 public class CoreStarter {
-    private final static int PORT = 1488;
+    private final static int PORT = 8841;
     /**
      * Starts server with {@link StringCore} available at {@code "rmi://localhost/core"}.
      *
@@ -22,9 +22,9 @@ public class CoreStarter {
             System.err.println("Usage: java CoreStarter <filename>");
             return;
         }
-        StringCore stringCore = null;
+        StringCore stringCore;
         try {
-            stringCore = new StringCoreImpl(new File(args[0]));
+            stringCore = new StringCoreImpl(new File(args[0]), PORT);
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + args[0]);
             return;
