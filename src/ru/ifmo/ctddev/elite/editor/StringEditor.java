@@ -20,15 +20,22 @@ public class StringEditor {
     DefaultListModel<String> listModel;
     StringCore stringCore;
     ExecutorService executorService;
+    StringCursor first;
 
-    StringEditor() throws RemoteException {
+    StringEditor() throws RemoteException{
         executorService = Executors.newFixedThreadPool(MAX_THREADS);
-
+        /*try {
+            stringCore = (StringCore) Naming.lookup("rmi://localhost/core");
+        } catch (NotBoundException | MalformedURLException e) {
+            e.printStackTrace();
+        }*/
         frame = new JFrame(StringEditor.class.getSimpleName());
         mainPanel = new JPanel();
         buttonPanel = new JPanel();
         listModel = new DefaultListModel<>();
         jList = new JList(listModel);
+
+        jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         for (int i = 0; i < 10; i++) {
             listModel.addElement("hah " + i);
@@ -57,10 +64,10 @@ public class StringEditor {
         executorService.submit(() -> {
             try {
                 StringCursor stringCursor = stringCore.getAllStrings();
+                first = stringCursor;
                 List<String> list = new ArrayList<>();
                 while (stringCursor.hasNext()) {
-                    list.add(stringCursor.get());
-                    stringCursor.next();
+                    list.add(stringCursor.next());
                 }
                 SwingUtilities.invokeLater(() -> refreshUI(list));
             } catch (RemoteException e) {
@@ -76,7 +83,19 @@ public class StringEditor {
     }
 
     private void removeElements() {
-        refresh();
+        int index = jList.getSelectedIndex();
+        executorService.submit(() -> {
+            try {
+                for (int i = 0; i < index; i++) {
+                    first.next();
+                }
+
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
+
+
 
     }
 
@@ -84,8 +103,14 @@ public class StringEditor {
         String str = JOptionPane.showInputDialog(frame, "Enter your string", "Adding string", JOptionPane.PLAIN_MESSAGE);
         if (str == null)
             return;
-
-
+        executorService.submit(() -> {
+            try {
+                stringCore.addString(str);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
+        refresh();
     }
 
 
