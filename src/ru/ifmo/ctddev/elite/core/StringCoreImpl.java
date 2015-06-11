@@ -35,14 +35,18 @@ final class StringCoreImpl implements StringCore {
         database.add(string);
         StringCursor cursor = new StringCursorImpl(database.listIterator(database.size() - 1));
         UnicastRemoteObject.exportObject(cursor, port);
-        listeners.forEach(RefreshListener::onRefresh);
+        for (RefreshListener listener : listeners) {
+            listener.onRefresh();
+        }
         return cursor;
     }
 
     @Override
     public void removeString(StringCursor cursor) throws RemoteException {
         cursor.remove();
-        listeners.forEach(RefreshListener::onRefresh);
+        for (RefreshListener listener : listeners) {
+            listener.onRefresh();
+        }
     }
 
     @Override
