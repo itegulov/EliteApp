@@ -13,6 +13,7 @@ import java.util.*;
  */
 final class StringCoreImpl implements StringCore {
     private LinkedList<String> database = new LinkedList<>();
+    private List<RefreshListener> listeners = new ArrayList<>();
     private QueryEngine queryEngine = new QueryEngine();
     private int port;
 
@@ -22,6 +23,11 @@ final class StringCoreImpl implements StringCore {
         while (scanner.hasNextLine()) {
             database.add(scanner.nextLine());
         }
+    }
+
+    @Override
+    public void addRefreshListener(RefreshListener listener) {
+        listeners.add(listener);
     }
 
     @Override

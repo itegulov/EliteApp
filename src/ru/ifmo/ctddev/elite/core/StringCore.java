@@ -12,6 +12,9 @@ import java.util.List;
  * @author Daniyar Itegulov
  */
 public interface StringCore extends Remote {
+
+    void addRefreshListener(RefreshListener listener);
+
     /**
      * Simply adds provided string to database.
      *
@@ -52,6 +55,14 @@ public interface StringCore extends Remote {
      */
     List<RequestHistory> getQueries() throws RemoteException;
 
+    /**
+     * Easy way to get instance of {@link StringCore}.
+     *
+     * @return instance of {@code StringCore}
+     * @throws RemoteException if some rmi error has occurred
+     * @throws NotBoundException
+     * @throws MalformedURLException
+     */
     static StringCore getInstance() throws RemoteException, NotBoundException, MalformedURLException {
         return (StringCore) Naming.lookup("rmi://localhost/core");
     }
