@@ -2,6 +2,7 @@ package ru.ifmo.ctddev.elite.core;
 
 import ru.ifmo.ctddev.elite.query.Query;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * @author Daniyar Itegulov
  */
-public interface StringCore {
+public interface StringCore extends Remote {
     /**
      * Simply adds provided string to database.
      *
@@ -44,9 +45,9 @@ public interface StringCore {
     List<Boolean> isAllExists(Collection<String> collection) throws RemoteException;
 
     /**
-     * Gets all queries, made to this database.
-     * @return list of queries for this database
+     * Gets all requests, made to this database.
+     * @return list of requests for this database
      * @throws RemoteException if some remote error has occurred
      */
-    List<Query> getQueries() throws RemoteException;
+    List<RequestHistory> getQueries() throws RemoteException;
 }
