@@ -12,6 +12,7 @@ import java.util.*;
  */
 final class StringCoreImpl implements StringCore {
     private LinkedList<String> database = new LinkedList<>();
+    private QueryEngine queryEngine = new QueryEngine();
 
     public StringCoreImpl(File file) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
@@ -41,6 +42,7 @@ final class StringCoreImpl implements StringCore {
         List<Boolean> list = new ArrayList<>();
         for (String string: collection) {
             boolean found = false;
+            queryEngine.addQuery(string);
             for (String data: database) {
                 if (string.equals(data)) {
                     found = true;
@@ -54,6 +56,6 @@ final class StringCoreImpl implements StringCore {
 
     @Override
     public List<RequestHistory> getQueries() throws RemoteException {
-        throw new UnsupportedOperationException();
+        return queryEngine.getAllRequest();
     }
 }
