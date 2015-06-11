@@ -3,6 +3,7 @@ package ru.ifmo.ctddev.elite.core;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 /**
@@ -13,8 +14,10 @@ import java.util.*;
 final class StringCoreImpl implements StringCore {
     private LinkedList<String> database = new LinkedList<>();
     private QueryEngine queryEngine = new QueryEngine();
+    private int port;
 
-    public StringCoreImpl(File file) throws FileNotFoundException {
+    public StringCoreImpl(File file, int port) throws FileNotFoundException {
+        this.port = port;
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()) {
             database.add(scanner.nextLine());
@@ -24,7 +27,9 @@ final class StringCoreImpl implements StringCore {
     @Override
     public StringCursor addString(String string) throws RemoteException {
         database.add(string);
-        return new StringCursorImpl(database.listIterator(database.size() - 1));
+        StringCursor cursor = new StringCursorImpl(database.listIterator(database.size() - 1));
+        UnicastRemoteObject.exportObject(cursor, port);
+        return cursor;
     }
 
     @Override
@@ -34,7 +39,9 @@ final class StringCoreImpl implements StringCore {
 
     @Override
     public StringCursor getAllStrings() throws RemoteException {
-        return new StringCursorImpl(database.listIterator());
+        StringCursor cursor = new StringCursorImpl(database.listIterator());
+        UnicastRemoteObject.exportObject(cursor, port);
+        return cursor;
     }
 
     @Override

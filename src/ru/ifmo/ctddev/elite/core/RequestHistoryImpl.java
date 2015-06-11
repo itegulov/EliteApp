@@ -1,5 +1,7 @@
 package ru.ifmo.ctddev.elite.core;
 
+import java.rmi.RemoteException;
+
 /**
  * @author Daniyar Itegulov
  */
@@ -13,12 +15,12 @@ final class RequestHistoryImpl implements RequestHistory {
     }
 
     @Override
-    public int getCount() {
+    public int getCount() throws RemoteException {
         return count;
     }
 
     @Override
-    public String getString() {
+    public String getString() throws RemoteException {
         return data;
     }
 }
