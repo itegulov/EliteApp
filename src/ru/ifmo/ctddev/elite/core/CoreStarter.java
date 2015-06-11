@@ -2,6 +2,7 @@ package ru.ifmo.ctddev.elite.core;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -37,6 +38,16 @@ public class CoreStarter {
             return;
         }
         StringCore stringCore;
+        File file = new File(args[0]);
+        try {
+            if (!file.exists()) {
+                //noinspection ResultOfMethodCallIgnored
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            System.err.println("Couldn't create file");
+            return;
+        }
         try {
             stringCore = new StringCoreImpl(new File(args[0]), PORT);
         } catch (FileNotFoundException e) {

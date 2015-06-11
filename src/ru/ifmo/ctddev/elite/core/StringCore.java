@@ -13,6 +13,13 @@ import java.util.List;
  */
 public interface StringCore extends Remote {
 
+    /**
+     * Adds listener for refreshing. Guaranteed, that it will be called when there is
+     * some new information on server.
+     *
+     * @param listener refresh listener to be registered
+     * @throws RemoteException if some remote error has occurred
+     */
     void addRefreshListener(RefreshListener listener) throws RemoteException;
 
     /**
