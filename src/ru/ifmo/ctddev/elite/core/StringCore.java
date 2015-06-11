@@ -1,7 +1,5 @@
 package ru.ifmo.ctddev.elite.core;
 
-import ru.ifmo.ctddev.elite.query.Query;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;

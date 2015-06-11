@@ -24,6 +24,16 @@ final class StringCursorImpl implements StringCursor {
     }
 
     @Override
+    public String previous() throws RemoteException {
+        return iterator.previous();
+    }
+
+    @Override
+    public boolean hasPrevious() throws RemoteException {
+        return iterator.hasPrevious();
+    }
+
+    @Override
     public boolean hasNext() throws RemoteException {
         return iterator.hasNext();
     }

@@ -18,6 +18,23 @@ public interface StringCursor extends Remote {
     String next() throws RemoteException;
 
     /**
+     * More cursor to previous element.
+     *
+     * @return previous string, pointed by this cursor now.
+     * @throws RemoteException if some remote error has occurred
+     * @throws NoSuchElementException if there is no previous element
+     */
+    String previous() throws RemoteException;
+
+    /**
+     * Checks if there is previous element.
+     *
+     * @return {@code true} if there is previous element, {@code false} otherwise.
+     * @throws RemoteException if some remote error has occurred
+     */
+    boolean hasPrevious() throws RemoteException;
+
+    /**
      * Checks if there is next element.
      *
      * @return {@code true} if there is next element, {@code false} otherwise.
