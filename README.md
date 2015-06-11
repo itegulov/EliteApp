@@ -1,4 +1,4 @@
-# EliteApp
+# StringManager
 
 Ядро: Запускаемый класс ru.ifmo.ctddev.elite.core.CoreStarter <Название файла для базы данных>
 
