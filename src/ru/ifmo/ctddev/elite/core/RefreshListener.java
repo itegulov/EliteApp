@@ -1,11 +1,11 @@
 package ru.ifmo.ctddev.elite.core;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 /**
  * @author Daniyar Itegulov
  */
-@FunctionalInterface
 public interface RefreshListener extends Remote {
-    void onRefresh();
+    void onRefresh() throws RemoteException;
 }

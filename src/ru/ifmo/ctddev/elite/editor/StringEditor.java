@@ -1,5 +1,6 @@
 package ru.ifmo.ctddev.elite.editor;
 
+import ru.ifmo.ctddev.elite.core.RefreshListener;
 import ru.ifmo.ctddev.elite.core.StringCore;
 import ru.ifmo.ctddev.elite.core.StringCursor;
 
@@ -10,10 +11,12 @@ import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 public class StringEditor {
     public static final int MAX_THREADS = 10;
@@ -25,24 +28,15 @@ public class StringEditor {
     private final ExecutorService executorService;
     private StringCursor first;
 
-    StringEditor() throws RemoteException{
+    StringEditor(){
         executorService = Executors.newFixedThreadPool(MAX_THREADS);
-        try {
-            stringCore = StringCore.getInstance();
-        } catch (NotBoundException | MalformedURLException e) {
-            connectingError();
-        }
         frame = new JFrame(StringEditor.class.getSimpleName());
         JPanel mainPanel = new JPanel();
         buttonPanel = new JPanel();
+
         listModel = new DefaultListModel<>();
         jList = new JList<>(listModel);
-
         jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        for (int i = 0; i < 10; i++) {
-            listModel.addElement("hah " + i);
-        }
 
         mainPanel.setLayout(new BorderLayout());
         buttonPanel.setLayout(new FlowLayout());
@@ -62,8 +56,17 @@ public class StringEditor {
                 executorService.shutdownNow();
             }
         });
+        frame.setPreferredSize(new Dimension(400, 200));
         frame.pack();
         frame.setVisible(true);
+    }
+
+    private void start() {
+        try {
+            stringCore = StringCore.getInstance();
+        } catch (NotBoundException | MalformedURLException | RemoteException e) {
+            connectingError();
+        }
         refresh();
     }
 
@@ -130,6 +133,6 @@ public class StringEditor {
     }
 
     public static void main(String[] args) throws RemoteException {
-        new StringEditor();
+        new StringEditor().start();
     }
 }
