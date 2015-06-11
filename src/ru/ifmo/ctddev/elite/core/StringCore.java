@@ -1,5 +1,7 @@
 package ru.ifmo.ctddev.elite.core;
 
+import ru.ifmo.ctddev.elite.query.Query;
+
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
@@ -40,4 +42,11 @@ public interface StringCore {
      * @throws RemoteException if some remote error has occurred
      */
     List<Boolean> isAllExists(Collection<String> collection) throws RemoteException;
+
+    /**
+     * Gets all queries, made to this database.
+     * @return list of queries for this database
+     * @throws RemoteException if some remote error has occurred
+     */
+    List<Query> getQueries() throws RemoteException;
 }
