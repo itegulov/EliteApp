@@ -2,6 +2,7 @@ package ru.ifmo.ctddev.elite.core;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -38,17 +39,34 @@ public class CoreStarter {
         try {
             stringCore = new StringCoreImpl(new File(args[0]), PORT);
         } catch (FileNotFoundException e) {
-            System.err.println("File not found: " + args[0]);
+            System.err.println("File not found for read: " + args[0]);
             return;
         }
 
         try {
+            System.out.println("Starting server...");
             UnicastRemoteObject.exportObject(stringCore, PORT);
             Naming.rebind("rmi://localhost/core", stringCore);
+            System.out.println("Server started successfully");
         } catch (RemoteException e) {
             System.err.println("Cannot export object: " + e.getMessage());
         } catch (MalformedURLException e) {
             System.err.println("Malformed URL");
         }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            System.out.println("Closing server...");
+            try (PrintWriter pw = new PrintWriter(new File(args[0]))) {
+                StringCursor cursor = stringCore.getAllStrings();
+                while (cursor.hasNext()) {
+                    String string = cursor.next();
+                    System.out.println("Writing to DB: " + string);
+                    pw.println(string);
+                }
+            } catch (RemoteException e) {
+                System.err.println("Couldn't connect to StringCore");
+            } catch (FileNotFoundException e) {
+                System.err.println("File not found for write: " + args[0]);
+            }
+        }));
     }
 }
