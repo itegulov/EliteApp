@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface StringCore extends Remote {
 
-    void addRefreshListener(RefreshListener listener);
+    void addRefreshListener(RefreshListener listener) throws RemoteException;
 
     /**
      * Simply adds provided string to database.
