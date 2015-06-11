@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -20,8 +19,7 @@ public class StringEditor {
     public static final int MAX_THREADS = 10;
     private final JFrame frame;
     private final JList<String> jList;
-    private final JButton addButton, removeButton, refreshButton;
-    private final JPanel mainPanel, buttonPanel;
+    private final JPanel buttonPanel;
     private final DefaultListModel<String> listModel;
     private StringCore stringCore;
     private final ExecutorService executorService;
@@ -32,10 +30,10 @@ public class StringEditor {
         try {
             stringCore = StringCore.getInstance();
         } catch (NotBoundException | MalformedURLException e) {
-            e.printStackTrace();
+            connectingError();
         }
         frame = new JFrame(StringEditor.class.getSimpleName());
-        mainPanel = new JPanel();
+        JPanel mainPanel = new JPanel();
         buttonPanel = new JPanel();
         listModel = new DefaultListModel<>();
         jList = new JList<>(listModel);
@@ -50,16 +48,11 @@ public class StringEditor {
         buttonPanel.setLayout(new FlowLayout());
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         mainPanel.add(jList, BorderLayout.CENTER);
-        addButton = new JButton("add");
-        addButton.addActionListener(e -> addElement());
-        removeButton = new JButton("remove");
-        removeButton.addActionListener(e -> removeElements());
-        refreshButton = new JButton("refresh");
-        refreshButton.addActionListener(e -> refresh());
 
-        buttonPanel.add(addButton);
-        buttonPanel.add(removeButton);
-        buttonPanel.add(refreshButton);
+        createButton("Add", this::addElement, 'a');
+        createButton("Remove", this::removeElement, 'm');
+        createButton("Refresh", this::refresh, 'f');
+
         frame.getContentPane().add(mainPanel);
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
@@ -74,18 +67,25 @@ public class StringEditor {
         refresh();
     }
 
+    private void createButton(String name, Runnable action, char mnemonic) {
+        JButton ans = new JButton(name);
+        ans.addActionListener(e -> action.run());
+        ans.setMnemonic(mnemonic);
+        buttonPanel.add(ans);
+    }
+
     private void refresh() {
         executorService.submit(() -> {
             try {
                 StringCursor stringCursor = stringCore.getAllStrings();
-                first = stringCursor;
                 List<String> list = new ArrayList<>();
                 while (stringCursor.hasNext()) {
                     list.add(stringCursor.next());
                 }
+                first = stringCore.getAllStrings();
                 SwingUtilities.invokeLater(() -> refreshUI(list));
             } catch (RemoteException e) {
-                e.printStackTrace();
+                connectingError();
             }
         });
     }
@@ -95,22 +95,20 @@ public class StringEditor {
         list.forEach(listModel::addElement);
     }
 
-    private void removeElements() {
+    private void removeElement() {
         final int index = jList.getSelectedIndex();
         executorService.submit(() -> {
             try {
-                for (int i = 0; i < index; i++) {
+                for (int i = 0; i <= index; i++) {
                     first.next();
                 }
                 stringCore.removeString(first);
-                for (int i = 0; i < index; i++) {
-                    first.previous();
-                }
+                first = stringCore.getAllStrings();
+                refresh();
             } catch (RemoteException e) {
-                e.printStackTrace();
+                connectingError();
             }
         });
-        refresh();
     }
 
     public void addElement() {
@@ -121,12 +119,15 @@ public class StringEditor {
             try {
                 stringCore.addString(str);
             } catch (RemoteException e) {
-                e.printStackTrace();
+                connectingError();
             }
+            refresh();
         });
-        refresh();
     }
 
+    public void connectingError() {
+        JOptionPane.showMessageDialog(frame, "Troubles with connecting", "Error", JOptionPane.ERROR_MESSAGE);
+    }
 
     public static void main(String[] args) throws RemoteException {
         new StringEditor();
