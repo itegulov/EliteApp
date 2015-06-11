@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
@@ -12,6 +14,16 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class CoreStarter {
     private final static int PORT = 8841;
+    private static final Registry registry;
+    static {
+        try {
+            registry = LocateRegistry.createRegistry(1099);
+        } catch (RemoteException e) {
+            System.err.println("Couldn't create regitstry");
+            e.printStackTrace();
+            throw new IllegalStateException();
+        }
+    }
     /**
      * Starts server with {@link StringCore} available at {@code "rmi://localhost/core"}.
      *
@@ -29,6 +41,7 @@ public class CoreStarter {
             System.err.println("File not found: " + args[0]);
             return;
         }
+
         try {
             UnicastRemoteObject.exportObject(stringCore, PORT);
             Naming.rebind("rmi://localhost/core", stringCore);
